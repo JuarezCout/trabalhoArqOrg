@@ -334,21 +334,21 @@ public class EntradaSaida {
 				codigo[cont][3] = -1;
 				
 			} else {
-		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
-		    	
-		    	for (int i = 0; i < codigo.length; i++) {
-		    		for (int j = 0; j < codigo[i].length; j++) {
-						codigo[i][j] = 0;
+				System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
+
+				for (int i = 0; i < codigo.length; i++) {
+					for (int j = 0; j < codigo[i].length; j++) {
+							codigo[i][j] = 0;
+						}
 					}
+
+				break;
+			    }
+
+				for (int i = 0; i < 4; i++) {
+					System.out.print(codigo[cont][i] + " ");
 				}
-		    	
-		    	break;
-		    }
-			
-			for (int i = 0; i < 4; i++) {
-				System.out.print(codigo[cont][i] + " ");
-			}
-			System.out.println();
+				System.out.println();
 		}
 	}
 	
