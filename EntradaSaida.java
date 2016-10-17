@@ -6,16 +6,16 @@ import java.util.regex.Pattern;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.*; 
-
 public class EntradaSaida {
 	
 	public ArrayList<String> lista = new ArrayList<>();
-	public int[][] codigo = new int [lista.size()][4];
 	public String linha;
+	public static int[][] codigo = new int [100][4];
 	
 	public void analisaSintaxe (ArrayList<String> lista)
 	{	
+		//int[][] codTemporario = new int [lista.size()][4];
+		
 		/**
 		 * DICIONARIO
 		 * 1 = ADD
@@ -32,36 +32,37 @@ public class EntradaSaida {
 		 * -5 = D
 		*/
 		
-		int tamanho = lista.size();
+		int tamanho = lista.size() - 1;
 		for(int cont = 0; cont < tamanho; cont++){
 			
 			linha = lista.get(cont);
-			System.out.println(linha);
 			linha = linha.toUpperCase();
 			
 			//Patterns
-			Pattern add = Pattern.compile("^ADD\\s+(\\w)\\s*,\\s*(\\w)\\s*");
+			Pattern add = Pattern.compile("^ADD\\s+(\\w+)\\s*,\\s*(\\w+)\\s*");
 			
-			Pattern mov = Pattern.compile("^MOV\\s+(\\w)\\s*,\\s*(\\w)\\s*");
+			Pattern mov = Pattern.compile("^MOV\\s+(\\w+)\\s*,\\s*(\\w+)\\s*");
 			
-			Pattern imul = Pattern.compile("^IMUL\\s+(\\w)\\s*,\\s*(\\w)\\s*");
+			Pattern imul = Pattern.compile("^IMUL\\s+(\\w+)\\s*,\\s*(\\w+)\\s*");
 			
-			Pattern inc = Pattern.compile("^INC\\s+(\\w)\\s*");
+			Pattern inc = Pattern.compile("^INC\\s+(\\w+)\\s*");
 			
 			//Matchers
-			Matcher madd = add.matcher(linha);
+			Matcher madd  = add.matcher(linha);
 			
-			Matcher mmov = mov.matcher(linha);
+			Matcher mmov  = mov.matcher(linha);
 			
 			Matcher mimul = imul.matcher(linha);
 			
-			Matcher minc = inc.matcher(linha);
+			Matcher minc  = inc.matcher(linha);
+			
 			
 			//Convertendo os comandos para um vetor de int
 			if(madd.find()){
 				//ADD
-				codigo[cont][0] = 1; //Define o 1 de acordo com o dicion�rio
+				codigo[cont][0] = 1; //Define o 1 de acordo com o dicionário
 				
+				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((madd.group(1)).matches("([A, B, C, D])")){
 					switch (madd.group(1)){
 					case "A":
@@ -80,10 +81,22 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((madd.group(1)).matches("0X00+(\\w)")){
-					
+				if ((madd.group(1)).matches("0X0+(\\w)")){
+					String endHexa = (madd.group(1)).replaceAll("0X0+", "");
+					Integer end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][1] = end;
 				}
 				
+				//Valida se o Segundo valor do comando é um Registrador, Endereço ou uma Constante
 				if ((madd.group(2)).matches("([A, B, C, D])")){
 					switch (madd.group(1)){
 					case "A":
@@ -102,8 +115,19 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((madd.group(2)).matches("0X00+(\\d\\d)")){
-					
+				if ((madd.group(2)).matches("0X0+(\\w)")){
+					String endHexa = (madd.group(2)).replaceAll("0X0+", "");
+					Integer end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][2] = end;
 				}
 				
 				if ((madd.group(2)).matches("(\\d)")){
@@ -113,8 +137,10 @@ public class EntradaSaida {
 				codigo[cont][3] = -1;
 				
 			} else if (mmov.find()){
+				//MOV
+				codigo[cont][0] = 2;
 				
-				codigo[cont][0] = 1;
+				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((mmov.group(1)).matches("([A, B, C, D])")){
 					switch (mmov.group(1)){
 					case "A":
@@ -133,11 +159,23 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((mmov.group(1)).matches("0X00+(\\d\\d)")){
-					
+				if ((mmov.group(1)).matches("0X0+(\\w)")){
+					String endHexa = (mmov.group(1)).replaceAll("0X0+", "");
+					int end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][1] = end;
 				}
 				
-				if ((mmov.group(1)).matches("([A, B, C, D])")){
+				//Valida se o Segundo valor do comando é um Registrador, Endereço ou uma Constante
+				if ((mmov.group(2)).matches("([A, B, C, D])")){
 					switch (mmov.group(1)){
 					case "A":
 						codigo[cont][2] = -2;
@@ -155,19 +193,31 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((mmov.group(1)).matches("0X00+(\\d\\d)")){
-					
+				if ((mmov.group(2)).matches("0X0+(\\w)")){
+					String endHexa = (mmov.group(2)).replaceAll("0X0+", "");
+					Integer end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][2] = end;
+				}
+				if ((mmov.group(2)).matches("(\\d)")){
+					codigo[cont][2] = Integer.parseInt(mmov.group(2));
 				}
 				
-				if ((mmov.group(1)).matches("(\\d\\d)")){
-					codigo[cont][2] = Integer.parseInt(madd.group(2));
-				}
-				
-				codigo[cont][3] = -1;
+				codigo[cont][3] = -1;           
 				
 			} else if (mimul.find()){
+				//IMUL
+				codigo[cont][0] = 3;
 				
-				codigo[cont][0] = 1;
+				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((mimul.group(1)).matches("([A, B, C, D])")){
 					switch (mimul.group(1)){
 					case "A":
@@ -186,11 +236,23 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((mimul.group(1)).matches("0X00+(\\d\\d)")){
-					
+				if ((mimul.group(1)).matches("0X0+(\\w)")){
+					String endHexa = (mimul.group(1)).replaceAll("0X0+", "");
+					Integer end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][1] = end;
 				}
 				
-				if ((mimul.group(1)).matches("([A, B, C, D])")){
+				//Valida se o Segundo valor do comando é um Registrador, Endereço ou uma Constante
+				if ((mimul.group(2)).matches("([A, B, C, D])")){
 					switch (mimul.group(1)){
 					case "A":
 						codigo[cont][2] = -2;
@@ -208,20 +270,33 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((mimul.group(1)).matches("0X00+(\\d\\d)")){
-					
+				if ((mimul.group(2)).matches("0X0+(\\w)")){
+					String endHexa = (mimul.group(2)).replaceAll("0X0+", "");
+					Integer end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][2] = end;
 				}
 				
-				if ((mimul.group(1)).matches("(\\d\\d)")){
-					codigo[cont][2] = Integer.parseInt(madd.group(2));
+				if ((mimul.group(2)).matches("(\\d)")){
+					codigo[cont][2] = Integer.parseInt(mimul.group(2));
 				}
 				
 				codigo[cont][3] = -1;
 				
 			} else if (minc.find()){
+				//INC
+				codigo[cont][0] = 4;
 				
-				codigo[cont][0] = 1;
-				if ((madd.group(1)).matches("([A, B, C, D])")){
+				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
+				if ((minc.group(1)).matches("([A, B, C, D])")){
 					switch (madd.group(1)){
 					case "A":
 						codigo[cont][1] = -2;
@@ -239,18 +314,41 @@ public class EntradaSaida {
 					}
 				}
 				
-				if ((madd.group(1)).matches("0X00+(\\d\\d)")){
-					
+				if ((minc.group(1)).matches("0X0+(\\w)")){
+					String endHexa = (minc.group(1)).replaceAll("0X0+", "");
+					Integer end = Integer.parseInt(endHexa, 16);
+					if(end > 16){
+						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						for (int i = 0; i < codigo.length; i++) {
+				    		for (int j = 0; j < codigo[i].length; j++) {
+								codigo[i][j] = 0;
+							}
+						}
+				    }
+					end = (end + 16 + 5)*(-1);
+					codigo[cont][1] = end;
 				}
 				
 				codigo[cont][2] = -1;
 				
 				codigo[cont][3] = -1;
-			}
-		    else {
-		    	System.out.println("Erro na sintaxe do c�digo na linha: " + (cont + 1) + ".\n" + linha);
-		    	return;
+				
+			} else {
+		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
+		    	
+		    	for (int i = 0; i < codigo.length; i++) {
+		    		for (int j = 0; j < codigo[i].length; j++) {
+						codigo[i][j] = 0;
+					}
+				}
+		    	
+		    	break;
 		    }
+			
+			for (int i = 0; i < 4; i++) {
+				System.out.print(codigo[cont][i] + " ");
+			}
+			System.out.println();
 		}
 	}
 	
@@ -273,15 +371,14 @@ public class EntradaSaida {
 		analisaSintaxe(lista);
 	}
 	
-	/*public int buffer(int linhaAtual)
+	public int[] buffer(int linhaAtual)
 	{
-		if (linhaAtual == (lista.size() - 1)){
-			return -1;
-		}
+		/*if (linhaAtual == (lista.size() - 1)){
+			;
+		}*/
 		
 		return codigo[linhaAtual];
 	}
-	*/
 	
 }	
 	
