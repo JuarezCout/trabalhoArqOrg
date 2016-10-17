@@ -1,5 +1,8 @@
 package trabalhoArqOrg;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 public class Cpu {
 	int regA = -1, regB = -1, regC = -1, regD = -1, regCI = -1;
 	boolean procComando = false;
@@ -69,7 +72,13 @@ public class Cpu {
 		regCI = cont;
 	}
 	
-	public void procMov(int [] comando){}
+	public void procMov(int [] comando){
+		int val1 = comando [1];
+		int val2 = comando [2];
+		
+		
+		
+	}
 	
 	public void procAdd(int [] comando){}
 	
@@ -77,23 +86,45 @@ public class Cpu {
 	
 	public void procInc(int [] comando){}
 	
-	public void procComando(int [] comando){
-		switch (comando[0]){
+	public void procComando(int [][] comando, int linha){
+		switch (comando[linha][0]){
 			case 1:
-				procMov(comando);
+				procMov(comando[linha]);
 				break;
 			case 2:	
-				procAdd(comando);
+				procAdd(comando[linha]);
 				break;
 			case 3:
-				procImul(comando);
+				procImul(comando[linha]);
 				break;
 			case 4:
-				procInc(comando);
+				procInc(comando[linha]);
 				break;
 		}
 	}
 	
-	public void 
+	// Rodando o Emulador
+	public static void main(String[] args) throws IOException {
+		
+		double tamMemoria, clock, largBarr;
+		Scanner valMem   = new Scanner(System.in);
+		Scanner valClock = new Scanner(System.in);
+		Scanner valLarg  = new Scanner(System.in);
+	
+		System.out.println("Tamanho da Memoria: ");
+		tamMemoria = valMem.nextDouble();
+		
+		System.out.println("Clock: ");
+		clock = valClock.nextDouble();
+		
+		System.out.println("Tamanho da Memoria: ");
+		largBarr = valLarg.nextDouble();
+		
+		EntradaSaida i = new EntradaSaida();
+		i.lerArquivo();
+		
+		
+		
+	}		
 	
 }
