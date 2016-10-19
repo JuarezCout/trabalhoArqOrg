@@ -12,6 +12,10 @@ public class EntradaSaida {
 	public String linha;
 	public static int[][] codigo = new int [100][4];
 	
+	public void rodaEntradaSaida(){
+		//Irá rodar a classe e seus metodos enquanto a amemoria tiver espaço e os barramentos puderem ser usados
+	}
+	
 	public void analisaSintaxe (ArrayList<String> lista)
 	{	
 		//int[][] codTemporario = new int [lista.size()][4];
