@@ -1,10 +1,9 @@
 package trabalhoArqOrg;
 
-import java.util.Scanner;
-
 public class Barramento {
 	
-	double tamMemoria, clock, largBarr;
+	public double tamMemoria, clock, largBarr;
+	public static boolean barrEnd = true, barrDad = true, barrCont = true;
 	
 	/**
 	 * @return the tamMemoria
@@ -48,32 +47,39 @@ public class Barramento {
 		this.largBarr = largBarr;
 	}
 
-	//metodo que leve um Pacote de dados entre uma classe e outra
+	//metodos que levem Pacote de dados entre uma classe e outra
 	//barramento(REMETENTE, DESTINATARIO, PACOTE)
-	public void barramentoDados(String dest, String remet, int[] pacote){
+	
+	//De dados: transporte do que irá ser salvo ou executado
+	public void barramentoDados(String dest, int[] pacote){
 		
-		if(dest == "RAM"){
+		if(dest == "RAM" ){
+			barrDad = false;				
+			Gerenciador.DadNaRam = pacote;
 			
 		} else if (dest == "CPU"){
-			
+			barrDad = false;
+			Gerenciador.DadNaCpu = pacote;
 		}
 	}
 	
-	public void barramentoEndereco(String dest, String remet, int[] pacote){
+	//De endereço: Envio de endereços para salvar ou pegar dados
+	public void barramentoEndereco(String dest, int pacote){
 		if(dest == "E/A"){
-			
+			barrEnd = false;
 		} else if (dest == "CPU"){
-			
+			barrEnd = false;
 		} else if (dest == "RAM"){
-			
+			barrEnd = false;
 		} 
 	}
 	
-	public void barramentoControle(String dest, String remet, int[] pacote){
-		if(dest == "RAM"){
-			
-		} else if (dest == "CPU"){
-			
+	//De controle: Pergunta se tem espaço ou algo para executar
+	public void barramentoControle(String dest, String remet){
+		if(dest == "RAM" && remet == "CPU"){
+			barrCont = false;
+		} else if (dest == "RAM" && remet == "E/A"){
+			barrCont = false;
 		}
 	}
 	
