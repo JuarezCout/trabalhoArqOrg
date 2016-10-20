@@ -8,6 +8,10 @@ public class Cpu extends MemoriaRam {
 	int regA = -1, regB = -1, regC = -1, regD = -1, regCI = -1;
 	boolean procComando = false;
 	
+	public void rodaCpu (){
+		
+	}
+	
 	/**
 	 * @return the regA
 	 */
