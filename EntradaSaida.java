@@ -9,11 +9,19 @@ import java.util.ArrayList;
 public class EntradaSaida {
 	
 	public ArrayList<String> lista = new ArrayList<>();
-	public String linha;
-	public static int[][] codigo = new int [100][4];
+	public String linha;//linha para transformar em vetor
+	public static int[][] codigo = new int [100][4];//matriz com o codigo transformaod em vetores de int
 	
-	public void rodaEntradaSaida(){
-		//Irá rodar a classe e seus metodos enquanto a amemoria tiver espaço e os barramentos puderem ser usados
+	//inicia o fluxo entre E/S e RAM
+	
+	public void rodaEntradaSaida() throws IOException{
+		//Irá rodar a classe e seus metodos enquanto a memoria tiver espaço e os barramentos puderem ser usados
+		lerArquivo();
+		for (int i = 0; i < codigo.length; i++) {
+			if(Barramento.barrCont == false){
+				
+			}
+		}
 	}
 	
 	public void analisaSintaxe (ArrayList<String> lista)
@@ -338,21 +346,21 @@ public class EntradaSaida {
 				codigo[cont][3] = -1;
 				
 			} else {
-				System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
-
-				for (int i = 0; i < codigo.length; i++) {
-					for (int j = 0; j < codigo[i].length; j++) {
-							codigo[i][j] = 0;
-						}
+		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
+		    	
+		    	for (int i = 0; i < codigo.length; i++) {
+		    		for (int j = 0; j < codigo[i].length; j++) {
+						codigo[i][j] = 0;
 					}
-
-				break;
-			    }
-
-				for (int i = 0; i < 4; i++) {
-					System.out.print(codigo[cont][i] + " ");
 				}
-				System.out.println();
+		    	
+		    	break;
+		    }
+			
+			for (int i = 0; i < 4; i++) {
+				System.out.print(codigo[cont][i] + " ");
+			}
+			System.out.println();
 		}
 	}
 	
@@ -375,13 +383,11 @@ public class EntradaSaida {
 		analisaSintaxe(lista);
 	}
 	
-	public int[] buffer(int linhaAtual)
+	public void buffer(int linha)
 	{
-		/*if (linhaAtual == (lista.size() - 1)){
+		if (){
 			;
-		}*/
-		
-		return codigo[linhaAtual];
+		}
 	}
 	
 }	
