@@ -2,8 +2,7 @@ package trabalhoArqOrg;
 
 public class MemoriaRam {
 	
-	public int[] memoria = { -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-							 -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 };
+	public int[][] memoria = new int[lin][32];
 	public boolean gravouMemoria = false;
 	public int posMemoria = 0;
 	
