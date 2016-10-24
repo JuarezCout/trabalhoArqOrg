@@ -59,6 +59,10 @@ public class EntradaSaida {
 			
 			Pattern inc = Pattern.compile("^INC\\s+(\\w+)\\s*");
 			
+			Pattern label = Pattern.compile("^LABEL\\s+(\\d)");
+			
+			Pattern loop = Pattern.compile("(\\w)\\s*<\\s*(\\w)\\s*?\\s*JUMP\\s*(\\d)\\s*:\\s*(\\d)")
+			
 			//Matchers
 			Matcher madd  = add.matcher(linha);
 			
@@ -68,6 +72,9 @@ public class EntradaSaida {
 			
 			Matcher minc  = inc.matcher(linha);
 			
+			Matcher mlabel = label.matcher(linha);
+			
+			Matcher mloop = loop.matcher(linha);
 			
 			//Convertendo os comandos para um vetor de int
 			if(madd.find()){
@@ -344,6 +351,12 @@ public class EntradaSaida {
 				codigo[cont][2] = -1;
 				
 				codigo[cont][3] = -1;
+				
+			} else if(mlabel.find){
+				
+				
+			} else if(mloop.find){
+				
 				
 			} else {
 		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
