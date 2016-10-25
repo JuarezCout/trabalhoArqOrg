@@ -1,21 +1,14 @@
 package trabalhoArqOrg;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Gerenciador {
 	
 	public static Barramento barr = new Barramento();
-	public static int EndNaEA,  //variavel que recebe o endereço para EntradaSaida atraves do barramento
-		          EndNaCpu; //variavel que recebe o endereço para CPU atraves do barramento
-				      
-	public static boolean ContNaRam; //variavel que recebe o valor de controle avisando se tem ou não espaço ou codigo para processar
-	
-	public static int[] DadNaEA,  //
-			    DadNaCpu, //variaveis que contem os dados para cada componente da Arquitetura
-			    DadNaRam; //
 	  
-	public void rodaGerenciador (){
-		double ram, clock, larg;
+	public void rodaGerenciador () throws IOException{
+		/*double ram, clock, larg;
 		Scanner c = new Scanner (System.in);
 		//receber os dados do Tamanho da Ram, Clock e Largura do Barramento
 		System.out.println("Tamanho da ram:");
@@ -29,9 +22,12 @@ public class Gerenciador {
 		//salvar na Arquitetura os parametros para execução
 		barr.setTamMemoria(ram);
 		barr.setClock(clock);
-		barr.setLargBarr(larg);
+		barr.setLargBarr(larg);*/
 		
-				
+		EntradaSaida ea = new EntradaSaida();
+		//MemoriaRam ram = new MemoriaRam();
+		ea.rodaEntradaSaida();
+		//ram.rodaRam();	
 	}
 	
 	public void usouBarramento(){
@@ -39,3 +35,29 @@ public class Gerenciador {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
