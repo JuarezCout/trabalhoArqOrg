@@ -10,23 +10,50 @@ public class EntradaSaida {
 	
 	public ArrayList<String> lista = new ArrayList<>();
 	public String linha;//linha para transformar em vetor
-	public static int[][] codigo = new int [100][4];//matriz com o codigo transformaod em vetores de int
-	
+	int lin;
+	public int[][] codigo;//matriz com o codigo transformado em vetores de int
+	boolean temEndereco = Gerenciador.barr.perguntaEntradaSaida; //Variavel que diz se tem ou não endeereço na Ram para salvar o codigo
+	int verificaEnderecoEA;
+	boolean verificaBarramentoCont = false,verificaBarramentoDad = false, verificaTemEndereco = true;
+	MemoriaRam j = new MemoriaRam();
+			
 	//inicia o fluxo entre E/S e RAM
 	
 	public void rodaEntradaSaida() throws IOException{
 		//Irá rodar a classe e seus metodos enquanto a memoria tiver espaço e os barramentos puderem ser usados
 		lerArquivo();
-		for (int i = 0; i < codigo.length; i++) {
-			if(Barramento.barrCont == false){
-				
+		int cont = 0;
+		while (cont < codigo.length){
+			while (verificaBarramentoCont){
+				if(verificaBarramentoCont != Gerenciador.barr.isBarrContLiberado()){break;}  
+			}
+				System.out.println("rodei" + cont);
+				Gerenciador.barr.barramentoControle("RAM", "E/A");
+				Gerenciador.barr.setBarrContLiberado(false);
+				cont++;
+		}
+		
+		j.rodaRam();
+		
+		while (verificaTemEndereco){
+			if(verificaTemEndereco != Gerenciador.barr.isPerguntaEntradaSaida()){
+				while (!verificaTemEndereco){
+					if(verificaTemEndereco == Gerenciador.barr.isPerguntaEntradaSaida()){ break;}
+				}
+			}
+		
+			System.out.println("Recebi os Endereços");
+			Gerenciador.barr.setPerguntaEntradaSaida(false);
+			Gerenciador.barr.setBarrEndLiberado (true);
+			while(verificaBarramentoDad){
+				if(verificaBarramentoDad != Gerenciador.barr.isBarrDadLiberado()){ break; }
+			} 
+				Gerenciador.barr.barramentoDados("RAM", codigo[Gerenciador.barr.getEnderecoEA()]);
 			}
 		}
-	}
 	
 	public void analisaSintaxe (ArrayList<String> lista)
 	{	
-		//int[][] codTemporario = new int [lista.size()][4];
 		
 		/**
 		 * DICIONARIO
@@ -44,8 +71,9 @@ public class EntradaSaida {
 		 * -5 = D
 		*/
 		
-		int tamanho = lista.size() - 1;
-		for(int cont = 0; cont < tamanho; cont++){
+		lin = lista.size() - 1;
+		codigo = new int [lin][4];
+		for(int cont = 0; cont < lin; cont++){
 			
 			linha = lista.get(cont);
 			linha = linha.toUpperCase();
@@ -59,10 +87,6 @@ public class EntradaSaida {
 			
 			Pattern inc = Pattern.compile("^INC\\s+(\\w+)\\s*");
 			
-			Pattern label = Pattern.compile("^LABEL\\s+(\\d)");
-			
-			Pattern loop = Pattern.compile("(\\w)\\s*<\\s*(\\w)\\s*?\\s*JUMP\\s*(\\d)\\s*:\\s*(\\d)")
-			
 			//Matchers
 			Matcher madd  = add.matcher(linha);
 			
@@ -72,9 +96,6 @@ public class EntradaSaida {
 			
 			Matcher minc  = inc.matcher(linha);
 			
-			Matcher mlabel = label.matcher(linha);
-			
-			Matcher mloop = loop.matcher(linha);
 			
 			//Convertendo os comandos para um vetor de int
 			if(madd.find()){
@@ -154,7 +175,6 @@ public class EntradaSaida {
 				}
 				
 				codigo[cont][3] = -1;
-				
 			} else if (mmov.find()){
 				//MOV
 				codigo[cont][0] = 2;
@@ -352,12 +372,6 @@ public class EntradaSaida {
 				
 				codigo[cont][3] = -1;
 				
-			} else if(mlabel.find){
-				
-				
-			} else if(mloop.find){
-				
-				
 			} else {
 		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
 		    	
@@ -370,10 +384,10 @@ public class EntradaSaida {
 		    	break;
 		    }
 			
-			for (int i = 0; i < 4; i++) {
+			/*for (int i = 0; i < 4; i++) {
 				System.out.print(codigo[cont][i] + " ");
 			}
-			System.out.println();
+			System.out.println();*/
 		}
 	}
 	
@@ -394,15 +408,8 @@ public class EntradaSaida {
 		}
 		lerArq.close();  
 		analisaSintaxe(lista);
+		
 	}
-	
-	public void buffer(int linha)
-	{
-		if (){
-			;
-		}
-	}
-	
 }	
 	
 	
