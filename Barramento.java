@@ -3,8 +3,111 @@ package trabalhoArqOrg;
 public class Barramento {
 	
 	public double tamMemoria, clock, largBarr;
-	public static boolean barrEnd = true, barrDad = true, barrCont = true;
+	public boolean barrEndLiberado = true, barrDadLiberado = true, barrContLiberado = true;
+	public boolean perguntaMemoria = false, recebeMemoria = false, perguntaEntradaSaida = false, perguntaDados =  false, perguntaCpu = false;
+	public int[] dados;
+	public int enderecoEA;
 	
+	//metodos que levem Pacote de dados entre uma classe e outra
+	//barramento(REMETENTE, DESTINATARIO, PACOTE)
+	
+	//De dados: transporte do que irá ser salvo ou executado
+	public void barramentoDados(String dest, int[] pacote){
+		
+		if(dest == "RAM" ){
+			barrDadLiberado = false;
+			perguntaDados = true;
+			dados = pacote;
+			
+		} else if (dest == "CPU"){
+			barrDadLiberado = false;
+			perguntaDados = true;
+		}
+	}
+	
+	//De endereço: Envio de endereços para salvar ou pegar dados
+	public void barramentoEndereco(String dest, int pacote){
+		if(dest == "E/A"){
+			barrEndLiberado = false;
+			perguntaEntradaSaida = true;
+			perguntaMemoria = false;
+			enderecoEA = pacote;
+		} else if (dest == "CPU"){
+			barrEndLiberado = false;
+			perguntaCpu = true;
+			
+		}
+	}
+	
+	//De controle: Pergunta se tem espaço ou algo para executar
+	public void barramentoControle(String dest, String remet){
+		if(dest == "RAM" && remet == "CPU"){
+			barrContLiberado = false;
+			perguntaMemoria = true;
+		} else if (dest == "RAM" && remet == "E/A"){
+			System.out.println("Entrei");
+			//barrContLiberado = false;
+			perguntaMemoria = true;
+		}
+	}
+	
+	/**
+	 * @return the enderecoEA
+	 */
+	public int getEnderecoEA() {
+		return enderecoEA;
+	}
+
+	/**
+	 * @param enderecoEA the enderecoEA to set
+	 */
+	public void setEnderecoEA(int enderecoEA) {
+		this.enderecoEA = enderecoEA;
+	}
+
+	/**
+	 * @return se o barramento de endereço esta liberado
+	 */
+	public boolean isBarrEndLiberado() {
+		return barrEndLiberado;
+	}
+
+	/**
+	 * @param define quando o barramento ta ocupado
+	 */
+	public void setBarrEndLiberado(boolean barrEndLiberado) {
+		this.barrEndLiberado = barrEndLiberado;
+	}
+
+	/**
+	 * @return se o barramento de dados esta liberado
+	 */
+	public boolean isBarrDadLiberado() {
+		return barrDadLiberado;
+	}
+
+	/**
+	 * @param define quando o barramento ta ocupado
+	 */
+	public void setBarrDadLiberado(boolean barrDadLiberado) {
+		this.barrDadLiberado = barrDadLiberado;
+	}
+
+	/**
+	 * @return se o barramento de controle esta liberado
+	 *
+	 */
+	public boolean isBarrContLiberado() {
+		return barrContLiberado;
+	}
+
+	/**
+	 * @param define quando o barramento ta ocupado
+	 */
+	public void setBarrContLiberado(boolean barrContLiberado) {
+		this.barrContLiberado = barrContLiberado;
+	}
+
 	/**
 	 * @return the tamMemoria
 	 */
@@ -45,42 +148,90 @@ public class Barramento {
 	 */
 	public void setLargBarr(double largBarr) {
 		this.largBarr = largBarr;
+		}
+
+	/**
+	 * @return the perguntaMemoria
+	 */
+	public boolean isPerguntaMemoria() {
+		return perguntaMemoria;
 	}
 
-	//metodos que levem Pacote de dados entre uma classe e outra
-	//barramento(REMETENTE, DESTINATARIO, PACOTE)
-	
-	//De dados: transporte do que irá ser salvo ou executado
-	public void barramentoDados(String dest, int[] pacote){
-		
-		if(dest == "RAM" ){
-			barrDad = false;				
-			Gerenciador.DadNaRam = pacote;
-			
-		} else if (dest == "CPU"){
-			barrDad = false;
-			Gerenciador.DadNaCpu = pacote;
-		}
+	/**
+	 * @param perguntaMemoria the perguntaMemoria to set
+	 */
+	public void setPerguntaMemoria(boolean perguntaMemoria) {
+		this.perguntaMemoria = perguntaMemoria;
 	}
-	
-	//De endereço: Envio de endereços para salvar ou pegar dados
-	public void barramentoEndereco(String dest, int pacote){
-		if(dest == "E/A"){
-			barrEnd = false;
-		} else if (dest == "CPU"){
-			barrEnd = false;
-		} else if (dest == "RAM"){
-			barrEnd = false;
-		} 
+
+	/**
+	 * @return the recebeMemoria
+	 */
+	public boolean isRecebeMemoria() {
+		return recebeMemoria;
 	}
-	
-	//De controle: Pergunta se tem espaço ou algo para executar
-	public void barramentoControle(String dest, String remet){
-		if(dest == "RAM" && remet == "CPU"){
-			barrCont = false;
-		} else if (dest == "RAM" && remet == "E/A"){
-			barrCont = false;
-		}
+
+	/**
+	 * @param recebeMemoria the recebeMemoria to set
+	 */
+	public void setRecebeMemoria(boolean recebeMemoria) {
+		this.recebeMemoria = recebeMemoria;
+	}
+
+	/**
+	 * @return the perguntaEntradaSaida
+	 */
+	public boolean isPerguntaEntradaSaida() {
+		return perguntaEntradaSaida;
+	}
+
+	/**
+	 * @param perguntaEntradaSaida the perguntaEntradaSaida to set
+	 */
+	public void setPerguntaEntradaSaida(boolean perguntaEntradaSaida) {
+		this.perguntaEntradaSaida = perguntaEntradaSaida;
+	}
+
+	/**
+	 * @return the perguntaDados
+	 */
+	public boolean isPerguntaDados() {
+		return perguntaDados;
+	}
+
+	/**
+	 * @param perguntaDados the perguntaDados to set
+	 */
+	public void setPerguntaDados(boolean perguntaDados) {
+		this.perguntaDados = perguntaDados;
+	}
+
+	/**
+	 * @return the perguntaCpu
+	 */
+	public boolean isPerguntaCpu() {
+		return perguntaCpu;
+	}
+
+	/**
+	 * @param perguntaCpu the perguntaCpu to set
+	 */
+	public void setPerguntaCpu(boolean perguntaCpu) {
+		this.perguntaCpu = perguntaCpu;
+	}
+
+	/**
+	 * @return the dados
+	 */
+	public int[] getDados() {
+		return dados;
+	}
+
+	/**
+	 * @param dados the dados to set
+	 */
+	public void setDados(int[] dados) {
+		this.dados = dados;
 	}
 	
 	
