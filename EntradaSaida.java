@@ -9,12 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 public class EntradaSaida {
 	
-	public ArrayList<String> lista = new ArrayList<>();
-	public String linha;//linha para transformar em vetor
-	int lin;
+	private ArrayList<String> lista = new ArrayList<>();
+	private String linha;//linha para transformar em vetor
+	private int lin;
 	private List<Integer[]> listaCod = new ArrayList<Integer[]>();
 	public Integer[] codigo = new Integer[4]; //vetor com o codigo transformado em int
-	//boolean temEndereco = Gerenciador.barr.perguntaEntradaSaida; //Variavel que diz se tem ou não endereço na Ram para salvar o codigo
 	int verificaEnderecoEA;
 	boolean verificaBarramentoCont = false,verificaBarramentoDad = false, verificaTemEndereco = true;
 			
@@ -25,28 +24,24 @@ public class EntradaSaida {
 		lerArquivo();
 		int cont = 0;
 		while (cont < codigo.length){
-			while (verificaBarramentoCont){
-				System.out.println("Não ta livre");
+			/*while (verificaBarramentoCont){
+				System.out.println("Não ta livre");                                              //implementar a thread em cima disso
 				if(verificaBarramentoCont != Gerenciador.barr.isBarrContLiberado()){break;}  
-			}
+			}*/
 				System.out.println("rodei" + cont + "      " + Gerenciador.barr.isBarrContLiberado());
 				Gerenciador.barr.barramentoControle("RAM", "E/A");
 				cont++;
 		}
 		
-		while (Gerenciador.barr.getFilaEnd(0) != 0){
-			if(Gerenciador.barr.getFilaEnd(0) == 0){
-				while (Gerenciador.barr.getFilaEnd(0) == 0){
-					if(Gerenciador.barr.getFilaEnd(0) != 0){ break;}
-				}
-			}
+		ArrayList<Integer[]> filaEndereco = new ArrayList<Integer[]>();
 		
+		while (filaEndereco != null){		
 			System.out.println("Recebi os Endereços");
 			Gerenciador.barr.setBarrEndLiberado (true);
-			while(!Gerenciador.barr.isBarrDadLiberado()){
-				if(verificaBarramentoDad != Gerenciador.barr.isBarrDadLiberado()){ break; }
-			} 
-				Gerenciador.barr.barramentoDados("RAM", codigo[Gerenciador.barr.getEnderecoEA()]);
+			/*while(!Gerenciador.barr.isBarrDadLiberado()){
+				if(verificaBarramentoDad != Gerenciador.barr.isBarrDadLiberado()){ break; }  //implementar a thread em cima disso
+			}*/
+				Gerenciador.barr.barramentoDados("RAM", listaCod);
 			}
 		}
 	
