@@ -6,13 +6,15 @@ import java.util.regex.Pattern;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 public class EntradaSaida {
 	
 	public ArrayList<String> lista = new ArrayList<>();
 	public String linha;//linha para transformar em vetor
 	int lin;
-	public int[][] codigo;//matriz com o codigo transformado em vetores de int
-	//boolean temEndereco = Gerenciador.barr.perguntaEntradaSaida; //Variavel que diz se tem ou não endeereço na Ram para salvar o codigo
+	private List<Integer[]> listaCod = new ArrayList<Integer[]>();
+	public Integer[] codigo = new Integer[4]; //vetor com o codigo transformado em int
+	//boolean temEndereco = Gerenciador.barr.perguntaEntradaSaida; //Variavel que diz se tem ou não endereço na Ram para salvar o codigo
 	int verificaEnderecoEA;
 	boolean verificaBarramentoCont = false,verificaBarramentoDad = false, verificaTemEndereco = true;
 			
@@ -95,22 +97,22 @@ public class EntradaSaida {
 			//Convertendo os comandos para um vetor de int
 			if(madd.find()){
 				//ADD
-				codigo[cont][0] = 1; //Define o 1 de acordo com o dicionário
+				codigo[0] = 1; //Define o 1 de acordo com o dicionário
 				
 				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((madd.group(1)).matches("([A, B, C, D])")){
 					switch (madd.group(1)){
 					case "A":
-						codigo[cont][1] = -2;
+						codigo[1] = -2;
 						break;
 					case "B":
-						codigo[cont][1] = -3;
+						codigo[1] = -3;
 						break;
 					case "C":
-						codigo[cont][1] = -4;
+						codigo[1] = -4;
 						break;
 					case "D":
-						codigo[cont][1] = -5;
+						codigo[1] = -5;
 						break;
 						
 					}
@@ -122,29 +124,27 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
+								codigo[i] = 0;
 						}
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][1] = end;
+					codigo[1] = end;
 				}
 				
 				//Valida se o Segundo valor do comando é um Registrador, Endereço ou uma Constante
 				if ((madd.group(2)).matches("([A, B, C, D])")){
 					switch (madd.group(1)){
 					case "A":
-						codigo[cont][2] = -2;
+						codigo[2] = -2;
 						break;
 					case "B":
-						codigo[cont][2] = -3;
+						codigo[2] = -3;
 						break;
 					case "C":
-						codigo[cont][2] = -4;
+						codigo[2] = -4;
 						break;
 					case "D":
-						codigo[cont][2] = -5;
+						codigo[2] = -5;
 						break;
 						
 					}
@@ -156,38 +156,38 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
-						}
+							codigo[i] = 0;
+					}
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][2] = end;
+					codigo[2] = end;
 				}
 				
 				if ((madd.group(2)).matches("(\\d)")){
-					codigo[cont][2] = Integer.parseInt(madd.group(2));
+					codigo[2] = Integer.parseInt(madd.group(2));
 				}
 				
-				codigo[cont][3] = -1;
+				codigo[3] = -1;
+			
+				listaCod.add(cont, codigo);
 			} else if (mmov.find()){
 				//MOV
-				codigo[cont][0] = 2;
+				codigo[0] = 2;
 				
 				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((mmov.group(1)).matches("([A, B, C, D])")){
 					switch (mmov.group(1)){
 					case "A":
-						codigo[cont][1] = -2;
+						codigo[1] = -2;
 						break;
 					case "B":
-						codigo[cont][1] = -3;
+						codigo[1] = -3;
 						break;
 					case "C":
-						codigo[cont][1] = -4;
+						codigo[1] = -4;
 						break;
 					case "D":
-						codigo[cont][1] = -5;
+						codigo[1] = -5;
 						break;
 						
 					}
@@ -199,29 +199,27 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
+							codigo[i] = 0;
 						}
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][1] = end;
+					codigo[1] = end;
 				}
 				
 				//Valida se o Segundo valor do comando é um Registrador, Endereço ou uma Constante
 				if ((mmov.group(2)).matches("([A, B, C, D])")){
 					switch (mmov.group(1)){
 					case "A":
-						codigo[cont][2] = -2;
+						codigo[2] = -2;
 						break;
 					case "B":
-						codigo[cont][2] = -3;
+						codigo[2] = -3;
 						break;
 					case "C":
-						codigo[cont][2] = -4;
+						codigo[2] = -4;
 						break;
 					case "D":
-						codigo[cont][2] = -5;
+						codigo[2] = -5;
 						break;
 						
 					}
@@ -233,38 +231,38 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
+							codigo[i] = 0;
 						}
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][2] = end;
+					codigo[2] = end;
 				}
 				if ((mmov.group(2)).matches("(\\d)")){
-					codigo[cont][2] = Integer.parseInt(mmov.group(2));
+					codigo[2] = Integer.parseInt(mmov.group(2));
 				}
 				
-				codigo[cont][3] = -1;           
+				codigo[3] = -1; 
+				
+				listaCod.add(cont, codigo);
 				
 			} else if (mimul.find()){
 				//IMUL
-				codigo[cont][0] = 3;
+				codigo[0] = 3;
 				
 				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((mimul.group(1)).matches("([A, B, C, D])")){
 					switch (mimul.group(1)){
 					case "A":
-						codigo[cont][1] = -2;
+						codigo[1] = -2;
 						break;
 					case "B":
-						codigo[cont][1] = -3;
+						codigo[1] = -3;
 						break;
 					case "C":
-						codigo[cont][1] = -4;
+						codigo[1] = -4;
 						break;
 					case "D":
-						codigo[cont][1] = -5;
+						codigo[1] = -5;
 						break;
 						
 					}
@@ -276,29 +274,27 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
+							codigo[i] = 0;
 						}
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][1] = end;
+					codigo[1] = end;
 				}
 				
 				//Valida se o Segundo valor do comando é um Registrador, Endereço ou uma Constante
 				if ((mimul.group(2)).matches("([A, B, C, D])")){
 					switch (mimul.group(1)){
 					case "A":
-						codigo[cont][2] = -2;
+						codigo[2] = -2;
 						break;
 					case "B":
-						codigo[cont][2] = -3;
+						codigo[2] = -3;
 						break;
 					case "C":
-						codigo[cont][2] = -4;
+						codigo[2] = -4;
 						break;
 					case "D":
-						codigo[cont][2] = -5;
+						codigo[2] = -5;
 						break;
 						
 					}
@@ -310,39 +306,39 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
+							codigo[i] = 0;
 						}
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][2] = end;
+					codigo[2] = end;
 				}
 				
 				if ((mimul.group(2)).matches("(\\d)")){
-					codigo[cont][2] = Integer.parseInt(mimul.group(2));
+					codigo[2] = Integer.parseInt(mimul.group(2));
 				}
 				
-				codigo[cont][3] = -1;
+				codigo[3] = -1;
+				
+				listaCod.add(cont, codigo);
 				
 			} else if (minc.find()){
 				//INC
-				codigo[cont][0] = 4;
+				codigo[0] = 4;
 				
 				//Valida se o primeiro valor do comando é um Registrador ou um Endereço
 				if ((minc.group(1)).matches("([A, B, C, D])")){
 					switch (madd.group(1)){
 					case "A":
-						codigo[cont][1] = -2;
+						codigo[1] = -2;
 						break;
 					case "B":
-						codigo[cont][1] = -3;
+						codigo[1] = -3;
 						break;
 					case "C":
-						codigo[cont][1] = -4;
+						codigo[1] = -4;
 						break;
 					case "D":
-						codigo[cont][1] = -5;
+						codigo[1] = -5;
 						break;
 						
 					}
@@ -354,35 +350,33 @@ public class EntradaSaida {
 					if(end > 16){
 						System.out.println("\nErro no endereço escrito da linha: " + linha);
 						for (int i = 0; i < codigo.length; i++) {
-				    		for (int j = 0; j < codigo[i].length; j++) {
-								codigo[i][j] = 0;
-							}
-						}
+							codigo[i] = 0;
+					}	
 				    }
 					end = (end + 16 + 5)*(-1);
-					codigo[cont][1] = end;
+					codigo[1] = end;
 				}
 				
-				codigo[cont][2] = -1;
+				codigo[2] = -1;
 				
-				codigo[cont][3] = -1;
+				codigo[3] = -1;
+				
+				listaCod.add(cont, codigo);
 				
 			} else {
 		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
 		    	
 		    	for (int i = 0; i < codigo.length; i++) {
-		    		for (int j = 0; j < codigo[i].length; j++) {
-						codigo[i][j] = 0;
-					}
-				}
+					codigo[i] = 0;
+			}	
 		    	
 		    	break;
 		    }
-			
-			/*for (int i = 0; i < 4; i++) {
-				System.out.print(codigo[cont][i] + " ");
+			for (int i = 0; i < codigo.length; i++) {
+				System.out.print(listaCod.get(cont)[i] + " ");
 			}
-			System.out.println();*/
+			System.out.println();
+			
 		}
 	}
 	
