@@ -12,40 +12,36 @@ public class EntradaSaida {
 	public String linha;//linha para transformar em vetor
 	int lin;
 	public int[][] codigo;//matriz com o codigo transformado em vetores de int
-	boolean temEndereco = Gerenciador.barr.perguntaEntradaSaida; //Variavel que diz se tem ou não endeereço na Ram para salvar o codigo
+	//boolean temEndereco = Gerenciador.barr.perguntaEntradaSaida; //Variavel que diz se tem ou não endeereço na Ram para salvar o codigo
 	int verificaEnderecoEA;
 	boolean verificaBarramentoCont = false,verificaBarramentoDad = false, verificaTemEndereco = true;
-	MemoriaRam j = new MemoriaRam();
 			
 	//inicia o fluxo entre E/S e RAM
 	
 	public void rodaEntradaSaida() throws IOException{
-		//Irá rodar a classe e seus metodos enquanto a memoria tiver espaço e os barramentos puderem ser usados
+		//Irá rodar a classe e o metodo RODArAM e seus metodos enquanto a memoria tiver espaço e os barramentos puderem ser usados
 		lerArquivo();
 		int cont = 0;
 		while (cont < codigo.length){
 			while (verificaBarramentoCont){
+				System.out.println("Não ta livre");
 				if(verificaBarramentoCont != Gerenciador.barr.isBarrContLiberado()){break;}  
 			}
-				System.out.println("rodei" + cont);
+				System.out.println("rodei" + cont + "      " + Gerenciador.barr.isBarrContLiberado());
 				Gerenciador.barr.barramentoControle("RAM", "E/A");
-				Gerenciador.barr.setBarrContLiberado(false);
 				cont++;
 		}
 		
-		j.rodaRam();
-		
-		while (verificaTemEndereco){
-			if(verificaTemEndereco != Gerenciador.barr.isPerguntaEntradaSaida()){
-				while (!verificaTemEndereco){
-					if(verificaTemEndereco == Gerenciador.barr.isPerguntaEntradaSaida()){ break;}
+		while (Gerenciador.barr.getFilaEnd(0) != 0){
+			if(Gerenciador.barr.getFilaEnd(0) == 0){
+				while (Gerenciador.barr.getFilaEnd(0) == 0){
+					if(Gerenciador.barr.getFilaEnd(0) != 0){ break;}
 				}
 			}
 		
 			System.out.println("Recebi os Endereços");
-			Gerenciador.barr.setPerguntaEntradaSaida(false);
 			Gerenciador.barr.setBarrEndLiberado (true);
-			while(verificaBarramentoDad){
+			while(!Gerenciador.barr.isBarrDadLiberado()){
 				if(verificaBarramentoDad != Gerenciador.barr.isBarrDadLiberado()){ break; }
 			} 
 				Gerenciador.barr.barramentoDados("RAM", codigo[Gerenciador.barr.getEnderecoEA()]);
@@ -72,7 +68,6 @@ public class EntradaSaida {
 		*/
 		
 		lin = lista.size() - 1;
-		codigo = new int [lin][4];
 		for(int cont = 0; cont < lin; cont++){
 			
 			linha = lista.get(cont);
