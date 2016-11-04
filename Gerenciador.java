@@ -25,9 +25,11 @@ public class Gerenciador {
 		barr.setLargBarr(larg);*/
 		
 		EntradaSaida ea = new EntradaSaida();
-		//MemoriaRam ram = new MemoriaRam();
-		ea.rodaEntradaSaida();
-		//ram.rodaRam();	
+                MemoriaRam ram = new MemoriaRam();
+                Thread tES = new Thread(ea);
+                tES.start();
+                Thread tRam = new Thread(ram);
+                tRam.start();	
 	}
 	
 	public void usouBarramento(){
