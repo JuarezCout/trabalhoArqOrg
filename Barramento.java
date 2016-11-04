@@ -1,6 +1,7 @@
 package trabalhoArqOrg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Barramento {
 	
@@ -9,24 +10,23 @@ public class Barramento {
 	//public boolean perguntaMemoria = false, recebeMemoria = false, perguntaEntradaSaida = false, perguntaDados =  false, perguntaCpu = false;
 	public int[] dados;
 	public int enderecoEA;
-	public ArrayList<Integer> filaCont = new ArrayList<Integer>();
-	public ArrayList<Integer> filaEnd  = new ArrayList<Integer>();
-	public ArrayList<Integer> filaDad  = new ArrayList<Integer>();
+	public List<Integer> filaCont = new ArrayList<Integer>();
+	public List<Integer> filaEnd  = new ArrayList<Integer>();
+	public List<Integer[]> filaDad  = new ArrayList<Integer[]>();
 	 
 	//metodos que levem Pacote de dados entre uma classe e outra
 	//barramento(REMETENTE, DESTINATARIO, PACOTE)
 	
 	//De dados: transporte do que irá ser salvo ou executado
-	public void barramentoDados(String dest, int[] pacote){
+	public void barramentoDados(String dest, List<Integer[]> pacote){
 		
 		if(dest == "RAM" ){
 			barrDadLiberado = false;
-			//perguntaDados = true;
-			dados = pacote;
+			filaDad = pacote;
 			
 		} else if (dest == "CPU"){
 			barrDadLiberado = false;
-			//perguntaDados = true;
+			filaDad = pacote;
 		}
 	}
 	
@@ -34,13 +34,10 @@ public class Barramento {
 	public void barramentoEndereco(String dest, int pacote){
 		if(dest == "E/A"){
 			barrEndLiberado = false;
-			setFilaEnd(pacote);
-			//perguntaEntradaSaida = true;
-			//perguntaMemoria = false;
+			//setFilaEnd(pacote);
 			enderecoEA = pacote;
 		} else if (dest == "CPU"){
 			barrEndLiberado = false;
-		//	perguntaCpu = true;
 			
 		}
 	}
@@ -49,53 +46,53 @@ public class Barramento {
 	public void barramentoControle(String dest, String remet){
 		if(dest == "RAM" && remet == "CPU"){
 			barrContLiberado = false;
-			//perguntaMemoria = true;
 		} else if (dest == "RAM" && remet == "E/A"){
 			barrContLiberado = false;
-			setFilaCont(1);
-			//perguntaMemoria = true;
+			for (int i = 0; i < 4; i++) { // 8 é um valor temporario, na verdade tem que ser o valor da larura do barramento!
+				filaCont.set(i, 1); // 1 para dizer que quer gravar informações na RAM
+			}
 		}
 	}
 	
 	/**
 	 * @return the filaCont
 	 */
-	public Integer getFilaCont(int i) {
-		return filaCont.get(i);
+	public List<Integer> getFilaCont() {
+		return filaCont;
 	}
 
 	/**
 	 * @param filaCont the filaCont to set
 	 */
-	public void setFilaCont(int filaCont) {
+	public void setFilaCont(Integer filaCont) {
 		this.filaCont.add(filaCont);
 	}
 
 	/**
 	 * @return the filaEnd
 	 */
-	public Integer getFilaEnd(int i) {
-		return filaEnd.get(i);
+	public List<Integer> getFilaEnd() {
+		return filaEnd;
 	}
 
 	/**
 	 * @param filaEnd the filaEnd to set
 	 */
-	public void setFilaEnd(int filaEnd) {
+	public void setFilaEnd(Integer filaEnd) {
 		this.filaEnd.add(filaEnd);
 	}
 
 	/**
 	 * @return the filaDad
 	 */
-	public Integer getFilaDad(int i) {
-		return filaDad.get(i);
+	public List<Integer[]> getFilaDad() {
+		return filaDad;
 	}
 
 	/**
 	 * @param filaDad the filaDad to set
 	 */
-	public void setFilaDad(int filaDad) {
+	public void setFilaDad(Integer[] filaDad) {
 		this.filaDad.add(filaDad);
 	}
 
