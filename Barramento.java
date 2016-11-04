@@ -1,13 +1,18 @@
 package trabalhoArqOrg;
 
+import java.util.ArrayList;
+
 public class Barramento {
 	
 	public double tamMemoria, clock, largBarr;
 	public boolean barrEndLiberado = true, barrDadLiberado = true, barrContLiberado = true;
-	public boolean perguntaMemoria = false, recebeMemoria = false, perguntaEntradaSaida = false, perguntaDados =  false, perguntaCpu = false;
+	//public boolean perguntaMemoria = false, recebeMemoria = false, perguntaEntradaSaida = false, perguntaDados =  false, perguntaCpu = false;
 	public int[] dados;
 	public int enderecoEA;
-	
+	public ArrayList<Integer> filaCont = new ArrayList<Integer>();
+	public ArrayList<Integer> filaEnd  = new ArrayList<Integer>();
+	public ArrayList<Integer> filaDad  = new ArrayList<Integer>();
+	 
 	//metodos que levem Pacote de dados entre uma classe e outra
 	//barramento(REMETENTE, DESTINATARIO, PACOTE)
 	
@@ -16,12 +21,12 @@ public class Barramento {
 		
 		if(dest == "RAM" ){
 			barrDadLiberado = false;
-			perguntaDados = true;
+			//perguntaDados = true;
 			dados = pacote;
 			
 		} else if (dest == "CPU"){
 			barrDadLiberado = false;
-			perguntaDados = true;
+			//perguntaDados = true;
 		}
 	}
 	
@@ -29,12 +34,13 @@ public class Barramento {
 	public void barramentoEndereco(String dest, int pacote){
 		if(dest == "E/A"){
 			barrEndLiberado = false;
-			perguntaEntradaSaida = true;
-			perguntaMemoria = false;
+			setFilaEnd(pacote);
+			//perguntaEntradaSaida = true;
+			//perguntaMemoria = false;
 			enderecoEA = pacote;
 		} else if (dest == "CPU"){
 			barrEndLiberado = false;
-			perguntaCpu = true;
+		//	perguntaCpu = true;
 			
 		}
 	}
@@ -43,14 +49,56 @@ public class Barramento {
 	public void barramentoControle(String dest, String remet){
 		if(dest == "RAM" && remet == "CPU"){
 			barrContLiberado = false;
-			perguntaMemoria = true;
+			//perguntaMemoria = true;
 		} else if (dest == "RAM" && remet == "E/A"){
-			System.out.println("Entrei");
-			//barrContLiberado = false;
-			perguntaMemoria = true;
+			barrContLiberado = false;
+			setFilaCont(1);
+			//perguntaMemoria = true;
 		}
 	}
 	
+	/**
+	 * @return the filaCont
+	 */
+	public Integer getFilaCont(int i) {
+		return filaCont.get(i);
+	}
+
+	/**
+	 * @param filaCont the filaCont to set
+	 */
+	public void setFilaCont(int filaCont) {
+		this.filaCont.add(filaCont);
+	}
+
+	/**
+	 * @return the filaEnd
+	 */
+	public Integer getFilaEnd(int i) {
+		return filaEnd.get(i);
+	}
+
+	/**
+	 * @param filaEnd the filaEnd to set
+	 */
+	public void setFilaEnd(int filaEnd) {
+		this.filaEnd.add(filaEnd);
+	}
+
+	/**
+	 * @return the filaDad
+	 */
+	public Integer getFilaDad(int i) {
+		return filaDad.get(i);
+	}
+
+	/**
+	 * @param filaDad the filaDad to set
+	 */
+	public void setFilaDad(int filaDad) {
+		this.filaDad.add(filaDad);
+	}
+
 	/**
 	 * @return the enderecoEA
 	 */
@@ -151,76 +199,6 @@ public class Barramento {
 		}
 
 	/**
-	 * @return the perguntaMemoria
-	 */
-	public boolean isPerguntaMemoria() {
-		return perguntaMemoria;
-	}
-
-	/**
-	 * @param perguntaMemoria the perguntaMemoria to set
-	 */
-	public void setPerguntaMemoria(boolean perguntaMemoria) {
-		this.perguntaMemoria = perguntaMemoria;
-	}
-
-	/**
-	 * @return the recebeMemoria
-	 */
-	public boolean isRecebeMemoria() {
-		return recebeMemoria;
-	}
-
-	/**
-	 * @param recebeMemoria the recebeMemoria to set
-	 */
-	public void setRecebeMemoria(boolean recebeMemoria) {
-		this.recebeMemoria = recebeMemoria;
-	}
-
-	/**
-	 * @return the perguntaEntradaSaida
-	 */
-	public boolean isPerguntaEntradaSaida() {
-		return perguntaEntradaSaida;
-	}
-
-	/**
-	 * @param perguntaEntradaSaida the perguntaEntradaSaida to set
-	 */
-	public void setPerguntaEntradaSaida(boolean perguntaEntradaSaida) {
-		this.perguntaEntradaSaida = perguntaEntradaSaida;
-	}
-
-	/**
-	 * @return the perguntaDados
-	 */
-	public boolean isPerguntaDados() {
-		return perguntaDados;
-	}
-
-	/**
-	 * @param perguntaDados the perguntaDados to set
-	 */
-	public void setPerguntaDados(boolean perguntaDados) {
-		this.perguntaDados = perguntaDados;
-	}
-
-	/**
-	 * @return the perguntaCpu
-	 */
-	public boolean isPerguntaCpu() {
-		return perguntaCpu;
-	}
-
-	/**
-	 * @param perguntaCpu the perguntaCpu to set
-	 */
-	public void setPerguntaCpu(boolean perguntaCpu) {
-		this.perguntaCpu = perguntaCpu;
-	}
-
-	/**
 	 * @return the dados
 	 */
 	public int[] getDados() {
@@ -233,6 +211,76 @@ public class Barramento {
 	public void setDados(int[] dados) {
 		this.dados = dados;
 	}
+	
+	/**
+	 * @return the perguntaMemoria
+	 *//*
+	public boolean isPerguntaMemoria() {
+		return perguntaMemoria;
+	}
+
+	*//**
+	 * @param perguntaMemoria the perguntaMemoria to set
+	 *//*
+	public void setPerguntaMemoria(boolean perguntaMemoria) {
+		this.perguntaMemoria = perguntaMemoria;
+	}
+
+	*//**
+	 * @return the recebeMemoria
+	 *//*
+	public boolean isRecebeMemoria() {
+		return recebeMemoria;
+	}
+
+	*//**
+	 * @param recebeMemoria the recebeMemoria to set
+	 *//*
+	public void setRecebeMemoria(boolean recebeMemoria) {
+		this.recebeMemoria = recebeMemoria;
+	}
+
+	*//**
+	 * @return the perguntaEntradaSaida
+	 *//*
+	public boolean isPerguntaEntradaSaida() {
+		return perguntaEntradaSaida;
+	}
+
+	*//**
+	 * @param perguntaEntradaSaida the perguntaEntradaSaida to set
+	 *//*
+	public void setPerguntaEntradaSaida(boolean perguntaEntradaSaida) {
+		this.perguntaEntradaSaida = perguntaEntradaSaida;
+	}
+
+	*//**
+	 * @return the perguntaDados
+	 *//*
+	public boolean isPerguntaDados() {
+		return perguntaDados;
+	}
+
+	*//**
+	 * @param perguntaDados the perguntaDados to set
+	 *//*
+	public void setPerguntaDados(boolean perguntaDados) {
+		this.perguntaDados = perguntaDados;
+	}
+
+	*//**
+	 * @return the perguntaCpu
+	 *//*
+	public boolean isPerguntaCpu() {
+		return perguntaCpu;
+	}
+
+	*//**
+	 * @param perguntaCpu the perguntaCpu to set
+	 *//*
+	public void setPerguntaCpu(boolean perguntaCpu) {
+		this.perguntaCpu = perguntaCpu;
+	}*/
 	
 	
 }
