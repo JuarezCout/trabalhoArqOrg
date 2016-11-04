@@ -33,7 +33,7 @@ public class EntradaSaida {
 				cont++;
 		}
 		
-		ArrayList<Integer[]> filaEndereco = new ArrayList<Integer[]>();
+		List<Integer[]> filaEndereco = Gerenciador.barr.getFilaEnd();
 		
 		while (filaEndereco != null){		
 			System.out.println("Recebi os Endereços");
