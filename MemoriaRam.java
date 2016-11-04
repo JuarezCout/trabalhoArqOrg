@@ -25,12 +25,11 @@ public class MemoriaRam {
 			Gerenciador.barr.setBarrContLiberado(true); //Libera o barramento de controle
 			posEspMemoria();
 			if(posEspMemoria()){ // Se tiver memoria, pergunta se pode mandar para a EntradaSaida o endereço
-					if(Gerenciador.barr.isBarrEndLiberado() == false){
-						while (Gerenciador.barr.isBarrEndLiberado() == false){
+					/*if(Gerenciador.barr.isBarrEndLiberado() == false){
+						while (Gerenciador.barr.isBarrEndLiberado() == false){                    //implementar a thread em cima disso
 							if (Gerenciador.barr.isBarrEndLiberado() == true){ break;}
-						}	
+						}*/	
 						Gerenciador.barr.barramentoEndereco("E/A", posMemoria);	
-					} 
 			} else { //Senão tiver, manda um aviso que encheu e se deseja continuar a processar apagando os comandos amis antigos
 				Scanner c = new Scanner(System.in);
 				System.out.println("Acabou a Memoria para salvar as instruçoes!\nDeseja continuar, apagando os comandos mais antigos? [SIM||NAO]");
@@ -38,12 +37,12 @@ public class MemoriaRam {
 			    if (resp == "SIM"){
 			    	esvaziaMemoria();
 			    	while (!Gerenciador.barr.isBarrEndLiberado()){
-						if(Gerenciador.barr.isBarrEndLiberado() != Gerenciador.barr.isBarrEndLiberado()){
-							while (!Gerenciador.barr.isBarrEndLiberado()){
+						/*if(Gerenciador.barr.isBarrEndLiberado() != Gerenciador.barr.isBarrEndLiberado()){
+							while (!Gerenciador.barr.isBarrEndLiberado()){                                    //implementar a thread em cima disso  
 								if (Gerenciador.barr.isBarrEndLiberado()){ break;	}
 						}
-					} 
-						Gerenciador.barr.barramentoEndereco("E/A", posMemoria);						
+					} */
+					Gerenciador.barr.barramentoEndereco("E/A", posMemoria);						
 					}
 			    } else {
 			    	System.out.println("Memoria vai continuar cheia, logo encerraremos o Emulador!");
