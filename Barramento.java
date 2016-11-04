@@ -10,7 +10,7 @@ public class Barramento {
 	//public boolean perguntaMemoria = false, recebeMemoria = false, perguntaEntradaSaida = false, perguntaDados =  false, perguntaCpu = false;
 	public int[] dados;
 	public int enderecoEA;
-	public List<Integer> filaCont = new ArrayList<Integer>();
+	public List<Integer> filaCont = new ArrayList<Integer[]>();
 	public List<Integer> filaEnd  = new ArrayList<Integer>();
 	public List<Integer[]> filaDad  = new ArrayList<Integer[]>();
 	 
@@ -43,10 +43,23 @@ public class Barramento {
 	}
 	
 	//De controle: Pergunta se tem espaço ou algo para executar
-	public void barramentoControle(String dest, String remet){
-		if(dest == "RAM" && remet == "CPU"){
+	public void barramentoControle(String dest, String remet, String sinal){
+		if(dest == "RAM" && remet == "CPU" && sinal == "lerEndereco"){
 			barrContLiberado = false;
-		} else if (dest == "RAM" && remet == "E/A"){
+                        for (int i = 0; i < 4; i++) { // 8 é um valor temporario, na verdade tem que ser o valor da larura do barramento!
+				filaCont.set(i, 4); // 4 para dizer que quer ler em endereço na RAM
+			}
+		}else if(dest == "RAM" && remet == "CPU" && sinal == "LerComando"){
+			barrContLiberado = false;
+                        for (int i = 0; i < 4; i++) { // 8 é um valor temporario, na verdade tem que ser o valor da larura do barramento!
+				filaCont.set(i, 3); // 2 para dizer que quer ler comando na RAM
+			}
+		}else if(dest == "RAM" && remet == "CPU" && sinal == "GravDados"){
+			barrContLiberado = false;
+                        for (int i = 0; i < 4; i++) { // 8 é um valor temporario, na verdade tem que ser o valor da larura do barramento!
+				filaCont.set(i, 2); // 2 para dizer que quer gravar na RAM
+			}
+		}else if (dest == "RAM" && remet == "E/A"){
 			barrContLiberado = false;
 			for (int i = 0; i < 4; i++) { // 8 é um valor temporario, na verdade tem que ser o valor da larura do barramento!
 				filaCont.set(i, 1); // 1 para dizer que quer gravar informações na RAM
