@@ -6,50 +6,24 @@ import java.util.regex.Pattern;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class EntradaSaida implements Runnable {
 	
 	private ArrayList<String> lista = new ArrayList<>();
 	private String linha;//linha para transformar em vetor
 	private int lin;
-	private List<Integer[]> listaCod = new ArrayList<Integer[]>();
+	private List<Integer[]> listaCod = new ArrayList<Integer[]>(), filaDados = new ArrayList<Integer[]>();
 	public Integer[] codigo = new Integer[4]; //vetor com o codigo transformado em int
-	int verificaEnderecoEA;
-	//boolean verificaBarramentoCont = false,verificaBarramentoDad = false, verificaTemEndereco = true;
 			
 	//inicia o fluxo entre E/S e RAM
         
-        public EntradaSaida () throws IOException{
-            lerArquivo();
-        }
-	
-	public void rodaEntradaSaida() throws IOException{
-		//Irá rodar a classe e o metodo RODArAM e seus metodos enquanto a memoria tiver espaço e os barramentos puderem ser usados
-		lerArquivo();
-		int cont = 0;
-		while (cont < codigo.length){
-			/*while (verificaBarramentoCont){
-				System.out.println("Não ta livre");                                              //implementar a thread em cima disso
-				if(verificaBarramentoCont != Gerenciador.barr.isBarrContLiberado()){break;}  
-			}*/
-				System.out.println("rodei" + cont + "      " + Gerenciador.barr.isBarrContLiberado());
-				Gerenciador.barr.barramentoControle("RAM", "E/A");
-				cont++;
-		}
-		
-		List<Integer[]> filaEndereco = Gerenciador.barr.getFilaEnd();
-		
-		while (filaEndereco != null){		
-			System.out.println("Recebi os Endereços");
-			Gerenciador.barr.setBarrEndLiberado (true);
-			/*while(!Gerenciador.barr.isBarrDadLiberado()){
-				if(verificaBarramentoDad != Gerenciador.barr.isBarrDadLiberado()){ break; }  //implementar a thread em cima disso
-			}*/
-				Gerenciador.barr.barramentoDados("RAM", listaCod);
-			}
-		}
+    public EntradaSaida () throws IOException{
+        lerArquivo();
+    }
 	
 	public void analisaSintaxe (ArrayList<String> lista)
 	{	
@@ -400,9 +374,18 @@ public class EntradaSaida implements Runnable {
 		analisaSintaxe(lista);
 		
 	}
+	
+	public Integer[] buffer (int pos){
+		if (pos > listaCod.size()){
+			return null;
+		}
+		
+		return listaCod.get(pos);
+	}
 
     @Override
     public void run() {
+    	System.out.println("Entrei E/A");
         while (true) {
             try {
                 Thread.sleep(1000);
@@ -414,14 +397,15 @@ public class EntradaSaida implements Runnable {
             
             // Olhar barramento, na fila de endereços
             
-            List<Integer> filaEndereco = Gerenciador.barr.getFilaEnd();
-		
-            while (filaEndereco != null){		
-                Gerenciador.barr.setBarrEndLiberado (true);
-                Gerenciador.barr.barramentoDados("RAM", listaCod);
+            Integer[] filaEndereco = Gerenciador.barr.getFilaEnd();
+
+            
+            if (filaEndereco != null && filaEndereco[1] == 1){
+            	for (int i = 0; i < (Gerenciador.barr.getLarguraBanda())/4; i++) {
+					filaDados.add(listaCod.get(i));
+				}
+            	Gerenciador.barr.barramentoDados("RAM", filaDados, filaEndereco);
             }
-                
-            // Mandar dado caso haja endereco
             
         }
     }
