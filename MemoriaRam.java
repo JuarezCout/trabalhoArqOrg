@@ -10,7 +10,8 @@ public class MemoriaRam implements Runnable {
 	
 	private static final Object Integer = 1;
 	public int[] memoria;
-	public int posMemoria = 0;
+	public int posMemoria = 0, cont;
+	public boolean barramentoEndLivre = true;
 	
 	public MemoriaRam(int tam){
 		this.memoria = new int[tam];
@@ -23,14 +24,14 @@ public class MemoriaRam implements Runnable {
 	* Metodos para tratar sobre o recebimento e verificação da memoria
 	*/
 	
-	public boolean posEspMemoria(){
-		for(int cont = 0; cont <= (memoria.length / 2); cont+=4){
+	public int posMemoriaDisponivel(){
+		for(cont = 0; cont <= (memoria.length / 2); cont+=4){
+			if (cont > memoria.length - Gerenciador.barr.getLarguraBanda()){esvaziaMemoria();}
 			if (memoria[cont] == -1){
-				this.posMemoria = cont;
-				return true;
+				break;
 			}
 		}
-		return false;
+		return cont;
 	}
 	
 	public void avanPosMemoria(){
@@ -74,34 +75,19 @@ public class MemoriaRam implements Runnable {
             }
 			
 			int[] filaControle = Gerenciador.barr.getFilaCont();
-			/*if (Gerenciador.barr.getFilaCont() != null){		
-                filaControle = Gerenciador.barr.getFilaCont();
-                Gerenciador.barr.setFilaCont(null);
-            } else {
-            	filaControle = null;
-            }*/
-			
-			if(filaControle != null){
-				posEspMemoria();
-				if (filaControle[0] == 1){
-					if(posEspMemoria() == true){
-						Gerenciador.barr.barramentoEndereco("E/A", posMemoria);	
-					} else {
-						Scanner c = new Scanner(System.in);
-						System.out.println("Acabou a Memoria para salvar as instruçoes!\nDeseja continuar, apagando os comandos mais antigos? [SIM||NAO]");
-					    String resp = c.nextLine();
-					    if (resp == "SIM"){
-					    	esvaziaMemoria();
-					    	Gerenciador.barr.barramentoEndereco("E/A", posMemoria);						
-					    } else {
-					    	System.out.println("Memoria vai continuar cheia, logo encerraremos o Emulador!");
-					    	c.close();
-					    	return;
-					    }
-					    c.close();
-					}
+			if (filaControle[0] == 1){ //se o sinal é da e/s
+				if(barramentoEndLivre){
+					int endereco = posMemoriaDisponivel();
+					Gerenciador.barr.barramentoEndereco("E/A", endereco);
+					this.barramentoEndLivre = false;
 				}
-			
+			}
+			if (filaControle[0] == 2){ //se o sinal é da cpu
+				if(barramentoEndLivre){
+					int endereco = posMemoriaDisponivel();
+					Gerenciador.barr.barramentoEndereco("CPU", endereco);
+					this.barramentoEndLivre = false;
+				}
 			}
 			
 			List<Integer[]> filaDados;
