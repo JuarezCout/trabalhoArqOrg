@@ -41,32 +41,33 @@ public class Barramento {
 			endereco[1] = 1; // 1 para dizer que o endereco é para e/a
 			filaEnd.set(0, endereco);
 		} else if (dest == "CPU"){
-			
-			
+			endereco[0] = pacote;
+			endereco[1] = 2; // 2 para dizer que o endereco é para cpu	
+			filaEnd.set(0, endereco);
 		}
 	}
 	
 	//De controle: Pergunta se tem espaço ou algo para executar
-	public void barramentoControle(String dest, String remet, String sinal){
-		if(dest == "RAM" && remet == "CPU" && sinal == "lerEndereco"){
+	public void barramentoControle(String dest, String remet, int sinal){
+		if(dest == "RAM" && remet == "CPU"  ){
 			int[] cont = {4};
-            for (int i = 0; i < 4; i++) { 
-				filaCont.add(i, cont); // 4 para dizer que quer ler em endereço na RAM
+            for (int i = 0; i < this.larguraBanda/4; i++) { 
+				filaCont.add(i, cont); // 4 para dizer que cpu quer ler em endereço na RAM
 			}
-		}else if(dest == "RAM" && remet == "CPU" && sinal == "LerComando"){
+		}else if(dest == "RAM" && remet == "CPU"  ){
 			int[] cont = {3};
-            for (int i = 0; i < 4; i++) { 
-				filaCont.add(i, cont); // 2 para dizer que quer ler comando na RAM
+            for (int i = 0; i < this.larguraBanda/4; i++) { 
+				filaCont.add(i, cont); // 2 para dizer que a cpu quer ler comando na RAM
 			}
-		}else if(dest == "RAM" && remet == "CPU" && sinal == "GravDados"){
+		}else if(dest == "RAM" && remet == "CPU"  ){
 			int[] cont = {2};
-            for (int i = 0; i < 4; i++) { 
-				filaCont.add(i, cont); // 2 para dizer que quer gravar na RAM
+            for (int i = 0; i < this.larguraBanda/4; i++) { 
+				filaCont.add(i, cont); // 2 para dizer que a cpu quer gravar na RAM
 			}
 		}else if (dest == "RAM" && remet == "E/A"){
 			int[] cont = {1};
-			for (int i = 0; i < (Gerenciador.barr.getLarguraBanda())/4; i++) { 				
-				filaCont.add(i, cont); // 1 para dizer que quer gravar informações na RAM
+			for (int i = 0; i < this.larguraBanda/4; i++) { 				
+				filaCont.add(i, cont); // 1 para dizer que a e/s quer gravar informações na RAM
 			}
 		}
 	}
