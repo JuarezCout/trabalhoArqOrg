@@ -13,11 +13,12 @@ import java.util.logging.Logger;
 
 public class EntradaSaida implements Runnable {
 	
-	private ArrayList<String> lista = new ArrayList<>();
-	private String linha;//linha para transformar em vetor
-	private int lin;
-	private List<Integer[]> listaCod = new ArrayList<Integer[]>(), filaDados = new ArrayList<Integer[]>();
+	private ArrayList<String> listaArquivo = new ArrayList<>();
+	private String linhaCodigoInt;//linha para transformar em vetor
+	private int lin, contadorDeInstrucoes = 0;
+	private List<Integer[]> listaComCodigoInt = new ArrayList<Integer[]>(), filaDados = new ArrayList<Integer[]>();
 	public Integer[] codigo = new Integer[4]; //vetor com o codigo transformado em int
+	public boolean barramentoContLivre = true, barramentoDadLivre = false;
 			
 	//inicia o fluxo entre E/S e RAM
         
@@ -44,11 +45,11 @@ public class EntradaSaida implements Runnable {
 		 * -5 = D
 		*/
 		
-		lin = lista.size() - 1;
+		lin = listaArquivo.size() - 1;
 		for(int cont = 0; cont < lin; cont++){
 			
-			linha = lista.get(cont);
-			linha = linha.toUpperCase();
+			linhaCodigoInt = listaArquivo.get(cont);
+			linhaCodigoInt = linhaCodigoInt.toUpperCase();
 			
 			//Patterns
 			Pattern add = Pattern.compile("^ADD\\s+(\\w+)\\s*,\\s*(\\w+)\\s*");
@@ -60,13 +61,13 @@ public class EntradaSaida implements Runnable {
 			Pattern inc = Pattern.compile("^INC\\s+(\\w+)\\s*");
 			
 			//Matchers
-			Matcher madd  = add.matcher(linha);
+			Matcher madd  = add.matcher(linhaCodigoInt);
 			
-			Matcher mmov  = mov.matcher(linha);
+			Matcher mmov  = mov.matcher(linhaCodigoInt);
 			
-			Matcher mimul = imul.matcher(linha);
+			Matcher mimul = imul.matcher(linhaCodigoInt);
 			
-			Matcher minc  = inc.matcher(linha);
+			Matcher minc  = inc.matcher(linhaCodigoInt);
 			
 			
 			//Convertendo os comandos para um vetor de int
@@ -97,7 +98,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (madd.group(1)).replaceAll("0X0+", "");
 					Integer end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 								codigo[i] = 0;
 						}
@@ -129,7 +130,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (madd.group(2)).replaceAll("0X0+", "");
 					Integer end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 							codigo[i] = 0;
 					}
@@ -144,7 +145,7 @@ public class EntradaSaida implements Runnable {
 				
 				codigo[3] = -1;
 			
-				listaCod.add(cont, codigo);
+				listaComCodigoInt.add(cont, codigo);
 			} else if (mmov.find()){
 				//MOV
 				codigo[0] = 2;
@@ -172,7 +173,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (mmov.group(1)).replaceAll("0X0+", "");
 					int end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 							codigo[i] = 0;
 						}
@@ -204,7 +205,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (mmov.group(2)).replaceAll("0X0+", "");
 					Integer end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 							codigo[i] = 0;
 						}
@@ -218,7 +219,7 @@ public class EntradaSaida implements Runnable {
 				
 				codigo[3] = -1; 
 				
-				listaCod.add(cont, codigo);
+				listaComCodigoInt.add(cont, codigo);
 				
 			} else if (mimul.find()){
 				//IMUL
@@ -247,7 +248,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (mimul.group(1)).replaceAll("0X0+", "");
 					Integer end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 							codigo[i] = 0;
 						}
@@ -279,7 +280,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (mimul.group(2)).replaceAll("0X0+", "");
 					Integer end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 							codigo[i] = 0;
 						}
@@ -294,7 +295,7 @@ public class EntradaSaida implements Runnable {
 				
 				codigo[3] = -1;
 				
-				listaCod.add(cont, codigo);
+				listaComCodigoInt.add(cont, codigo);
 				
 			} else if (minc.find()){
 				//INC
@@ -323,7 +324,7 @@ public class EntradaSaida implements Runnable {
 					String endHexa = (minc.group(1)).replaceAll("0X0+", "");
 					Integer end = Integer.parseInt(endHexa, 16);
 					if(end > 16){
-						System.out.println("\nErro no endereço escrito da linha: " + linha);
+						System.out.println("\nErro no endereço escrito da linha: " + linhaCodigoInt);
 						for (int i = 0; i < codigo.length; i++) {
 							codigo[i] = 0;
 					}	
@@ -336,10 +337,10 @@ public class EntradaSaida implements Runnable {
 				
 				codigo[3] = -1;
 				
-				listaCod.add(cont, codigo);
+				listaComCodigoInt.add(cont, codigo);
 				
 			} else {
-		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linha + ").");
+		    	System.out.println("\n\nErro na sintaxe do código da linha: " + (cont + 1) + " (" + linhaCodigoInt + ").");
 		    	
 		    	for (int i = 0; i < codigo.length; i++) {
 					codigo[i] = 0;
@@ -348,7 +349,7 @@ public class EntradaSaida implements Runnable {
 		    	break;
 		    }
 			for (int i = 0; i < codigo.length; i++) {
-				System.out.print(listaCod.get(cont)[i] + " ");
+				System.out.print(listaComCodigoInt.get(cont)[i] + " ");
 			}
 			System.out.println();
 			
@@ -365,27 +366,32 @@ public class EntradaSaida implements Runnable {
 	    
 		while (linha != null) {
 			linha = lerArq.readLine();
-		    lista.add(linha);
+		    listaArquivo.add(linha);
 		    if (linha == null){
 		    	break;
 		    }
 		}
 		lerArq.close();  
-		analisaSintaxe(lista);
+		analisaSintaxe(listaArquivo);
 		
 	}
 	
-	public Integer[] buffer (int pos){
-		if (pos > listaCod.size()){
+	public List<Integer[]> buffer (int pos){
+		if (pos > listaComCodigoInt.size()){
 			return null;
 		}
+		List<Integer[]> dadosPorLoop = new ArrayList<Integer[]>();
+		for (int i = pos; i < (Gerenciador.barr.getLarguraBanda())/4; i++) {
+			dadosPorLoop.set((i - pos), listaComCodigoInt.get(i));
+		}
 		
-		return listaCod.get(pos);
+		return dadosPorLoop;
 	}
 
     @Override
     public void run() {
     	System.out.println("Entrei E/A");
+    	
         while (true) {
             try {
                 Thread.sleep(1000);
@@ -393,20 +399,32 @@ public class EntradaSaida implements Runnable {
                 Logger.getLogger(EntradaSaida.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            Gerenciador.barr.barramentoControle("RAM", "E/A", "");           
+            if(barramentoContLivre){
+            	Gerenciador.barr.barramentoControle("RAM", "E/A", 0); 
+            	this.barramentoContLivre = false;
+            }
+                    
             
             // Olhar barramento, na fila de endereços
             
-            Integer[] filaEndereco = Gerenciador.barr.getFilaEnd();
-
+            	Integer[] filaEndereco = Gerenciador.barr.getFilaEnd();
             
             if (filaEndereco != null && filaEndereco[1] == 1){
-            	for (int i = 0; i < (Gerenciador.barr.getLarguraBanda())/4; i++) {
-					filaDados.add(listaCod.get(i));
-				}
-            	Gerenciador.barr.barramentoDados("RAM", filaDados, filaEndereco);
+            	if(barramentoDadLivre){
+					filaDados = buffer(contadorDeInstrucoes); //pega os dados
+					Gerenciador.barr.barramentoDados("RAM", filaDados, filaEndereco); // manda para a Ram
+					
+					contadorDeInstrucoes = contadorDeInstrucoes + (Gerenciador.barr.getLarguraBanda())/4; // define de onde vai pegar na lista com o codigo Int
+					barramentoContLivre = true; // libera o barramento de Controle
+					barramentoDadLivre = false; // Ocupa o barramento de dados
+            	}
+            	
             }
             
+            /**if () { 
+							If que fecha a thread se o arquivo terminar
+			}
+            */
         }
     }
 }	
