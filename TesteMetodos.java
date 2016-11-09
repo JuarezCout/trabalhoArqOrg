@@ -7,23 +7,23 @@ public class TesteMetodos {
 
 	public static void main(String[] args) throws IOException {
 		
-		/*double tamMemoria, clock, largBarr;
-		Scanner valMem   = new Scanner(System.in);
-		Scanner valClock = new Scanner(System.in);
-		Scanner valLarg  = new Scanner(System.in);
-	
-		System.out.println("Tamanho da Memoria: ");
-		tamMemoria = valMem.nextDouble();
+		int tamanhoRam, clock, larg;
+		Scanner c = new Scanner (System.in);
+		//receber os dados do Tamanho da Ram, Clock e Largura do Barramento
+		System.out.println("Tamanho da ram:");
+		tamanhoRam = c.nextInt();
+		System.out.println("Frequencia do Clock:");
+		clock = c.nextInt();
+		System.out.println("Largura do barramento:");
+		larg = c.nextInt();
+		c.close();	
 		
-		System.out.println("Clock: ");
-		clock = valClock.nextDouble();
 		
-		System.out.println("Tamanho da Memoria: ");
-		largBarr = valLarg.nextDouble();*/
-		
-		Gerenciador g = new Gerenciador();
-		g.rodaGerenciador();
-		
+		try {
+			Gerenciador.rodaGerenciador(tamanhoRam, clock, larg);
+		} catch (Exception e) {
+			e.getMessage();
+		}
 	}
 
 }
