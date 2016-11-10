@@ -17,6 +17,7 @@ public class EntradaSaida implements Runnable {
 	private String linhaCodigoInt;//linha para transformar em vetor
 	private int lin, contadorDeInstrucoes = 0;
 	private List<Integer[]> listaComCodigoInt = new ArrayList<Integer[]>(), filaDados = new ArrayList<Integer[]>();
+	private List<Integer[]> filaEndereco;
 	public Integer[] codigo = new Integer[4]; //vetor com o codigo transformado em int
 	public boolean barramentoContLivre = true, barramentoDadLivre = false;
 			
@@ -390,7 +391,6 @@ public class EntradaSaida implements Runnable {
 
     @Override
     public void run() {
-    	System.out.println("Entrei E/A");
     	
         while (true) {
             try {
@@ -401,25 +401,34 @@ public class EntradaSaida implements Runnable {
             
             if(barramentoContLivre){
             	Gerenciador.barr.barramentoControle("RAM", "E/A", 0); 
+            	System.out.println("ES: Mandei controle para RAM");
             	this.barramentoContLivre = false;
-            }
-                    
-            
-            // Olhar barramento, na fila de endereços
-            
-            	Integer[] filaEndereco = Gerenciador.barr.getFilaEnd();
-            
-            if (filaEndereco != null && filaEndereco[1] == 1){
-            	if(barramentoDadLivre){
-					filaDados = buffer(contadorDeInstrucoes); //pega os dados
-					Gerenciador.barr.barramentoDados("RAM", filaDados, filaEndereco); // manda para a Ram
-					
-					contadorDeInstrucoes = contadorDeInstrucoes + (Gerenciador.barr.getLarguraBanda())/4; // define de onde vai pegar na lista com o codigo Int
-					barramentoContLivre = true; // libera o barramento de Controle
-					barramentoDadLivre = false; // Ocupa o barramento de dados
-            	}
             	
             }
+            // Olhar barramento, na fila de endereços
+            if(barramentoDadLivre){
+				if (!Gerenciador.barr.getFilaEnd().isEmpty()) {
+					System.out.println("ES: Recebi o endereço da RAM");
+					 this.filaEndereco = Gerenciador.barr.getFilaEnd();
+					 Gerenciador.barr.setNullFilaEnd();                        
+				} else {
+					this.filaEndereco = null;
+				}
+	          
+	            
+	            if (this.filaEndereco != null && this.filaEndereco.get(0)[1] == 1){				//ajeitar erro
+					filaDados = buffer(contadorDeInstrucoes); //pega os dados
+					Integer[] enderecoParaSalvarDado = {filaEndereco.get(0)[0]};
+					Gerenciador.barr.barramentoDados("RAM", filaDados, enderecoParaSalvarDado ); // manda para a Ram
+					System.out.println("ES: Mandei dados para RAM");
+					
+					contadorDeInstrucoes = contadorDeInstrucoes + (Gerenciador.barr.getLarguraBanda())/4; // define de onde vai pegar na lista com o codigo Int
+					this.barramentoContLivre = true; // libera o barramento de Controle
+					this.barramentoDadLivre = false; // Ocupa o barramento de dados
+	            	
+	            }
+        	}
+            
             
             /**if () { 
 							If que fecha a thread se o arquivo terminar
@@ -427,6 +436,13 @@ public class EntradaSaida implements Runnable {
             */
         }
     }
+
+	/**
+	 * @param barramentoDadLivre the barramentoDadLivre to set
+	 */
+	public void setBarramentoDadLivre(boolean barramentoDadLivre) {
+		this.barramentoDadLivre = barramentoDadLivre;
+	}
 }	
 	
 	
