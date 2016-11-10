@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Barramento {
-	public Integer[] endereco;
+	public Integer[] endereco =  new Integer[2];
 	public int[] dados;
 	public int largura, clock, larguraBanda;
 	public ArrayList<int[]> filaCont = new ArrayList<int[]>();
-	public List<Integer[]> filaEnd     = new ArrayList<Integer[]>();
+	public List<Integer[]> filaEnd   = new ArrayList<Integer[]>();
 	public List<Integer[]> filaDad   = new ArrayList<Integer[]>();
 	 
 	public Barramento (int clock, int largura){
@@ -24,26 +24,26 @@ public class Barramento {
 	
 	//De dados: transporte do que irá ser salvo ou executado
 	public void barramentoDados(String dest, List<Integer[]> pacote, Integer[] end){
-		
 		if(dest == "RAM" ){
-			filaDad = pacote;
-			endereco[0] = end[0];			
+			this.filaDad = pacote;
+			this.endereco[0] = end[0];			
 		} else if (dest == "CPU"){
-			filaDad = pacote;
-			endereco[0] = end[0];
+			this.filaDad = pacote;
+			this.endereco[0] = end[0];
 		}
 	}
 	
 	//De endereço: Envio de endereços para salvar ou pegar dados
 	public void barramentoEndereco(String dest, Integer pacote){
 		if(dest == "E/A"){
-			endereco[0] = pacote;
-			endereco[1] = 1; // 1 para dizer que o endereco é para e/a
-			filaEnd.set(0, endereco);
+			this.endereco[0] = pacote;
+			this.endereco[1] = 1; // 1 para dizer que o endereco é para e/a
+			this.filaEnd.add(0, endereco);
+			Gerenciador.entradaSaida.setBarramentoDadLivre(true);
 		} else if (dest == "CPU"){
-			endereco[0] = pacote;
-			endereco[1] = 2; // 2 para dizer que o endereco é para cpu	
-			filaEnd.set(0, endereco);
+			this.endereco[0] = pacote;
+			this.endereco[1] = 2; // 2 para dizer que o endereco é para cpu	
+			this.filaEnd.add(0, endereco);
 		}
 	}
 	
@@ -52,23 +52,22 @@ public class Barramento {
 		if(dest == "RAM" && remet == "CPU"  ){
 			int[] cont = {4};
             for (int i = 0; i < this.larguraBanda/4; i++) { 
-				filaCont.add(i, cont); // 4 para dizer que cpu quer ler em endereço na RAM
+            	this.filaCont.add(i, cont); // 4 para dizer que cpu quer ler em endereço na RAM
 			}
 		}else if(dest == "RAM" && remet == "CPU"  ){
 			int[] cont = {3};
             for (int i = 0; i < this.larguraBanda/4; i++) { 
-				filaCont.add(i, cont); // 2 para dizer que a cpu quer ler comando na RAM
+            	this.filaCont.add(i, cont); // 2 para dizer que a cpu quer ler comando na RAM
 			}
 		}else if(dest == "RAM" && remet == "CPU"  ){
 			int[] cont = {2};
             for (int i = 0; i < this.larguraBanda/4; i++) { 
-				filaCont.add(i, cont); // 2 para dizer que a cpu quer gravar na RAM
+            	this.filaCont.add(i, cont); // 2 para dizer que a cpu quer gravar na RAM
 			}
 		}else if (dest == "RAM" && remet == "E/A"){
-			int[] cont = {1};
-			for (int i = 0; i < this.larguraBanda/4; i++) { 				
-				filaCont.add(i, cont); // 1 para dizer que a e/s quer gravar informações na RAM
-			}
+			int[] cont = {1};				
+			this.filaCont.add(0, cont); // 1 para dizer que a e/s quer gravar informações na RAM
+			Gerenciador.memoriaRam.setBarramentoEndLivre(true);
 		}
 	}
 	
@@ -82,8 +81,12 @@ public class Barramento {
 	/**
 	 * @return the filaCont
 	 */
-	public int[] getFilaCont() {
-		return filaCont.get(0);
+	public int getFilaCont(int i) {
+		return filaCont.get(0)[i];
+	}
+	
+	public void setNullFilaCont(){
+		this.filaCont.clear();
 	}
 
 	/**
@@ -96,8 +99,12 @@ public class Barramento {
 	/**
 	 * @return the filaEnd
 	 */
-	public Integer[] getFilaEnd() {
-		return filaEnd.get(0);
+	public List<Integer[]> getFilaEnd() {
+		return filaEnd;
+	}
+	
+	public void setNullFilaEnd(){
+		this.filaEnd.clear();
 	}
 
 	/**
@@ -113,7 +120,11 @@ public class Barramento {
 	public List<Integer[]> getFilaDad() {
 		return filaDad;
 	}
-
+	
+	public void setNullFilaDad(){
+		this.filaDad.clear();
+	}
+	
 	/**
 	 * @param filaDad the filaDad to set
 	 */
