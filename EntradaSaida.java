@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,8 +15,10 @@ public class EntradaSaida implements Runnable {
 	private ArrayList<String> listaArquivo = new ArrayList<>();
 	private String linhaCodigoInt;//linha para transformar em vetor
 	private int lin, contadorDeInstrucoes = 0;
-	private List<Integer[]> listaComCodigoInt = new ArrayList<Integer[]>(), filaDados = new ArrayList<Integer[]>();
-	private List<Integer[]> filaEndereco;
+	private ArrayList<Integer[]> listaComCodigoInt = new ArrayList<Integer[]>();
+	private ArrayList<Integer[]> filaDados = new ArrayList<Integer[]>();
+	private ArrayList<Integer[]> dadosPorLoop = new ArrayList<Integer[]>();
+	private int[] filaEndereco = new int[2];
 	public Integer[] codigo = new Integer[4]; //vetor com o codigo transformado em int
 	public boolean barramentoContLivre = true, barramentoDadLivre = false;
 			
@@ -27,6 +28,59 @@ public class EntradaSaida implements Runnable {
         lerArquivo();
     }
 	
+     @Override
+    public void run() {
+    	
+        while (true) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(EntradaSaida.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            if(barramentoContLivre){
+            	Gerenciador.barr.barramentoControle("RAM", "E/A", 0); 
+            	System.out.println("ES: Mandei controle para RAM");
+            	this.barramentoContLivre = false;
+            	
+            }
+            // Olhar barramento, na fila de endereços
+            if(barramentoDadLivre){
+				if (Gerenciador.barr.getFilaEnd() != null) {
+					System.out.println("ES: Recebi o endereço da RAM");
+					 this.filaEndereco = Gerenciador.barr.getFilaEnd();
+					 Gerenciador.barr.setNullFilaEnd();
+				} else {
+					this.filaEndereco = null;
+				}
+	          
+	            
+	            if (this.filaEndereco != null && this.filaEndereco[1] == 1){
+	            	for (int i = contadorDeInstrucoes; i < (Gerenciador.barr.getLarguraBanda())/4; i++) {
+						this.filaDados.add(i, buffer(contadorDeInstrucoes)); //pega os dados
+					}
+					Integer[] enderecoParaSalvarDado = {filaEndereco[0]};
+					Gerenciador.barr.barramentoDados("RAM", filaDados, enderecoParaSalvarDado ); // manda para a Ram
+					this.filaEndereco = null;
+					this.filaDados = null;
+					System.out.println("ES: Mandei dados para RAM");
+					
+					this.contadorDeInstrucoes = contadorDeInstrucoes + (Gerenciador.barr.getLarguraBanda())/4; // define de onde vai pegar na lista com o codigo Int
+					this.barramentoContLivre = true; // libera o barramento de Controle
+					this.barramentoDadLivre = false; // Ocupa o barramento de dados
+	            	
+	            }
+        	}
+            
+            if (contadorDeInstrucoes > listaComCodigoInt.get(0).length) { 
+            	System.out.println("Todas as instruções foram salvas! Thread ES finalizada!");
+            	Thread.interrupted();
+            	break;
+			}
+            
+        }
+    }
+    
 	public void analisaSintaxe (ArrayList<String> lista)
 	{	
 		
@@ -147,6 +201,7 @@ public class EntradaSaida implements Runnable {
 				codigo[3] = -1;
 			
 				listaComCodigoInt.add(cont, codigo);
+				
 			} else if (mmov.find()){
 				//MOV
 				codigo[0] = 2;
@@ -377,65 +432,17 @@ public class EntradaSaida implements Runnable {
 		
 	}
 	
-	public List<Integer[]> buffer (int pos){
-		if (pos > listaComCodigoInt.size()){
+	public Integer[] buffer (int pos){
+		if (pos > listaComCodigoInt.get(0).length){
 			return null;
 		}
-		List<Integer[]> dadosPorLoop = new ArrayList<Integer[]>();
-		for (int i = pos; i < (Gerenciador.barr.getLarguraBanda())/4; i++) {
-			dadosPorLoop.set((i - pos), listaComCodigoInt.get(i));
-		}
+		/*for (int i = pos; i < (Gerenciador.barr.getLarguraBanda())/4; i++) {
+			if((Gerenciador.barr.getLarguraBanda())/4 > listaComCodigoInt.get(0).length - pos){break;}
+			dadosPorLoop.add((i - pos), listaComCodigoInt.get(i));
+		}*/
 		
-		return dadosPorLoop;
-	}
-
-    @Override
-    public void run() {
-    	
-        while (true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(EntradaSaida.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            if(barramentoContLivre){
-            	Gerenciador.barr.barramentoControle("RAM", "E/A", 0); 
-            	System.out.println("ES: Mandei controle para RAM");
-            	this.barramentoContLivre = false;
-            	
-            }
-            // Olhar barramento, na fila de endereços
-            if(barramentoDadLivre){
-				if (!Gerenciador.barr.getFilaEnd().isEmpty()) {
-					System.out.println("ES: Recebi o endereço da RAM");
-					 this.filaEndereco = Gerenciador.barr.getFilaEnd();
-					 Gerenciador.barr.setNullFilaEnd();                        
-				} else {
-					this.filaEndereco = null;
-				}
-	          
-	            
-	            if (this.filaEndereco != null && this.filaEndereco.get(0)[1] == 1){				//ajeitar erro
-					filaDados = buffer(contadorDeInstrucoes); //pega os dados
-					Integer[] enderecoParaSalvarDado = {filaEndereco.get(0)[0]};
-					Gerenciador.barr.barramentoDados("RAM", filaDados, enderecoParaSalvarDado ); // manda para a Ram
-					System.out.println("ES: Mandei dados para RAM");
-					
-					contadorDeInstrucoes = contadorDeInstrucoes + (Gerenciador.barr.getLarguraBanda())/4; // define de onde vai pegar na lista com o codigo Int
-					this.barramentoContLivre = true; // libera o barramento de Controle
-					this.barramentoDadLivre = false; // Ocupa o barramento de dados
-	            	
-	            }
-        	}
-            
-            
-            /**if () { 
-							If que fecha a thread se o arquivo terminar
-			}
-            */
-        }
-    }
+		return listaComCodigoInt.get(pos);
+	}   
 
 	/**
 	 * @param barramentoDadLivre the barramentoDadLivre to set
