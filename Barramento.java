@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Barramento {
-	public Integer[] endereco =  new Integer[2];
-	public int[] dados;
+	public int[] dados, endereco = new int[2];
 	public int largura, clock, larguraBanda;
-	public ArrayList<int[]> filaCont = new ArrayList<int[]>();
-	public List<Integer[]> filaEnd   = new ArrayList<Integer[]>();
-	public List<Integer[]> filaDad   = new ArrayList<Integer[]>();
+	public ArrayList<int[]> filaCont;
+	public List<int[]> filaEnd ;
+	public List<Integer[]> filaDad;
 	 
 	public Barramento (int clock, int largura){
 		this.clock = clock;
 		this.largura = largura;
 		this.larguraBanda = (clock*largura)/8;
+		filaCont = new ArrayList<int[]>();
+		filaEnd   = new ArrayList<int[]>();
+		filaDad   = new ArrayList<Integer[]>();
+		filaDad   = new ArrayList<Integer[]>();
 		
 	}
 	 
@@ -25,8 +28,7 @@ public class Barramento {
 	//De dados: transporte do que irá ser salvo ou executado
 	public void barramentoDados(String dest, List<Integer[]> pacote, Integer[] end){
 		if(dest == "RAM" ){
-			this.filaDad = pacote;
-			this.endereco[0] = end[0];			
+			this.filaDad.add(pacote.get(0));
 		} else if (dest == "CPU"){
 			this.filaDad = pacote;
 			this.endereco[0] = end[0];
@@ -34,16 +36,16 @@ public class Barramento {
 	}
 	
 	//De endereço: Envio de endereços para salvar ou pegar dados
-	public void barramentoEndereco(String dest, Integer pacote){
+	public void barramentoEndereco(String dest, int pacote){
 		if(dest == "E/A"){
 			this.endereco[0] = pacote;
 			this.endereco[1] = 1; // 1 para dizer que o endereco é para e/a
-			this.filaEnd.add(0, endereco);
+			this.filaEnd.add(endereco);
 			Gerenciador.entradaSaida.setBarramentoDadLivre(true);
 		} else if (dest == "CPU"){
 			this.endereco[0] = pacote;
 			this.endereco[1] = 2; // 2 para dizer que o endereco é para cpu	
-			this.filaEnd.add(0, endereco);
+			this.filaEnd.add(endereco);
 		}
 	}
 	
@@ -99,8 +101,8 @@ public class Barramento {
 	/**
 	 * @return the filaEnd
 	 */
-	public List<Integer[]> getFilaEnd() {
-		return filaEnd;
+	public int[] getFilaEnd() {
+		return filaEnd.get(0);
 	}
 	
 	public void setNullFilaEnd(){
@@ -110,7 +112,7 @@ public class Barramento {
 	/**
 	 * @param filaEnd the filaEnd to set
 	 */
-	public void setFilaEnd(Integer[] filaEnd) {
+	public void setFilaEnd(int[] filaEnd) {
 		this.filaEnd.add(filaEnd);
 	}
 
@@ -135,7 +137,7 @@ public class Barramento {
 	/**
 	 * @return the endereco
 	 */
-	public Integer[] getEndereco() {
+	public int[] getEndereco() {
 		return endereco;
 	}
 
